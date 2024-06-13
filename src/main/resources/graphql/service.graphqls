@@ -1,0 +1,22 @@
+type Servicio {
+    id: ID!
+    name: String!
+    description: String
+}
+
+input ServiceDto{
+    name: String!
+    description: String
+}
+
+extend type Query {
+    services: [Servicio]
+    service(id: ID!): Servicio
+}
+
+extend type Mutation {
+    createService(servicioDto: ServiceDto!): Servicio
+    updateService(id: ID!, servicioDto: ServiceDto!): Servicio
+    deleteService(id: ID!): Servicio
+}
+

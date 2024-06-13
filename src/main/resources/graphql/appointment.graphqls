@@ -1,0 +1,38 @@
+type Appointment {
+    id: ID!
+    scheduledDate: String!
+    status: String!
+    requestedServiceIds: [String]
+    customerId: String!
+    vehicleId: String!
+
+    requestedServices: [Servicio]
+    customer: User
+    vehicle: Vehicle
+}
+
+input AppointmentDto{
+    scheduledDate: String!
+    status: String
+    requestedServiceIds: [String]!
+    customerId: String!
+    vehicleId: String!
+}
+
+type Query{
+    appointments: [Appointment]
+    appointment(id: ID!): Appointment
+    appointmentsByCustomer(customerId: String!): [Appointment]
+    pendingAppointments: [Appointment]
+}
+
+type Mutation{
+    createAppointment(appointmentDto: AppointmentDto!): Appointment
+    updateAppointment(id: ID!, appointmentDto: AppointmentDto): Appointment
+    deleteAppointment(id: ID!): Appointment
+}
+
+schema {
+    query: Query,
+    mutation: Mutation
+}

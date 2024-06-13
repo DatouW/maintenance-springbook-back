@@ -1,0 +1,24 @@
+type Role {
+    id: ID!
+    name: String!
+    description: String
+    permissions:[String!]!
+}
+
+input RoleDto{
+    name: String!
+    description: String
+    permissions:[String!]!
+}
+
+extend type Query {
+    roles: [Role]
+    role(id: ID!): Role
+}
+
+extend type Mutation {
+    createRole(roleDto: RoleDto!): Role
+    updateRole(id: ID!, roleDto: RoleDto!): Role
+    deleteRole(id: ID!): Role
+}
+

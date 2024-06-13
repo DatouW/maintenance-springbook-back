@@ -1,0 +1,32 @@
+type Vehicle {
+    id: ID!
+    licensePlate: String!
+    brand: String!
+    model: String!
+    year: Int!
+    vin: String!
+    customerId: String!
+    customer: User
+}
+
+input VehicleDto{
+    licensePlate: String!
+    brand: String!
+    model: String!
+    year: Int!
+    vin: String!
+    customerId: String!
+}
+
+extend type Query {
+    vehicles: [Vehicle]
+    vehicle(id: ID!): Vehicle
+    vehiclesByCustomer(customerId: String!): [Vehicle]
+}
+
+extend type Mutation {
+    createVehicle(vehicleDto: VehicleDto!): Vehicle
+    updateVehicle(id: ID!, vehicleDto: VehicleDto!): Vehicle
+    deleteVehicle(id: ID!): Vehicle
+}
+

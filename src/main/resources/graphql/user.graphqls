@@ -1,0 +1,41 @@
+type User {
+    id: ID
+    firstName: String!
+    lastName: String!
+    email: String!
+    phone: String!
+    address: String!
+    position: String
+    username: String!
+    password: String!
+    token: String
+    roleId: String
+    role: Role
+}
+
+input AuthDto {
+    username: String!
+    password: String!
+}
+
+input UserDto{
+    firstName: String!
+    lastName: String!
+    email: String!
+    phone: String!
+    address: String!
+    position: String
+    roleId: String!
+}
+
+extend type Query {
+    users: [User]
+    user(id: ID!): User
+}
+
+extend type Mutation {
+    registerUser(userDto: UserDto!, authDto: AuthDto!): User
+    login(authDto: AuthDto!): User
+    updateUser(id: ID!, userDto: UserDto!): User
+    deleteUser(id: ID!): User
+}

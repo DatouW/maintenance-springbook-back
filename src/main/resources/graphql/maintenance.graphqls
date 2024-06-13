@@ -1,0 +1,55 @@
+type Maintenance {
+    id: ID!
+    date: String!
+    status: String!
+    details: [Detail]
+    description: String
+
+    employeeId: String!
+    appointmentId: String!
+    vehicleId: String!
+
+    employee: User
+    appointment: Appointment
+    vehicle: Vehicle
+}
+
+type Detail {
+    id:String
+    description: String!
+    cost: Float
+}
+
+input DetailDto {
+    id: String!
+    description: String!
+    cost: Float
+}
+
+input MaintenanceDto {
+    date: String
+    status: String
+    details: [DetailDto]
+    description: String
+    employeeId: String!
+    appointmentId: String!
+    vehicleId: String!
+}
+
+extend type Query {
+    maintenances: [Maintenance]
+    maintenancesByEmployee(employeeId: String!): [Maintenance]
+    maintenancesNotCompleted: [Maintenance]
+
+    maintenance(id: ID!): Maintenance
+    maintenanceByAppointment(id: String!): Maintenance
+}
+
+extend type Mutation {
+    createMaintenance(maintenanceDto: MaintenanceDto!): Maintenance
+    updateMaintenance(id: ID!, maintenanceDto: MaintenanceDto!): Maintenance
+    deleteMaintenance(id: ID!): Maintenance
+    addDetails(id: ID!, detailDtos: [DetailDto!]!): Maintenance
+    completedStatus(id: ID!, description: String, detailDtos: [DetailDto]): Maintenance
+}
+
