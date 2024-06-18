@@ -13,6 +13,7 @@ input RoleDto{
 
 extend type Query {
     roles: [Role]
+    rolesPag(offset: Int, limit: Int): Pagination
     role(id: ID!): Role
 }
 

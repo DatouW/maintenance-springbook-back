@@ -1,6 +1,7 @@
 package com.group8.code.controller;
 
 import com.group8.code.domain.Vehicle;
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.VehicleDto;
 import com.group8.code.service.VehicleService;
 import jakarta.validation.Valid;
@@ -25,6 +26,12 @@ public class VehicleGraphQLController {
     @PreAuthorize("hasAnyAuthority('vehicle/view','Ver Vehículos')")
     public List<Vehicle> vehicles() {
         return vehicleService.findAll();
+    }
+
+    @QueryMapping
+    @PreAuthorize("hasAnyAuthority('vehicle/view','Ver Vehículos')")
+    public Pagination<Vehicle> vehiclesPag(@Argument int offset, @Argument int limit){
+        return vehicleService.findAll(offset,limit);
     }
 
     @QueryMapping

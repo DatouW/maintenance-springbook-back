@@ -2,6 +2,7 @@ package com.group8.code.controller;
 
 
 import com.group8.code.domain.Role;
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.RoleDto;
 import com.group8.code.service.RoleService;
 import jakarta.validation.*;
@@ -26,6 +27,12 @@ public class RoleGraphQLController {
     @PreAuthorize("hasAnyAuthority('role/view','Ver Roles','Registrar Usuario')")
     public List<Role> roles(){
         return roleService.findAll();
+    }
+
+    @QueryMapping
+    @PreAuthorize("hasAnyAuthority('role/view','Ver Roles','Registrar Usuario')")
+    public Pagination<Role> rolesPag(@Argument int offset, @Argument int limit) {
+        return roleService.findAll(offset,limit);
     }
 
     @QueryMapping

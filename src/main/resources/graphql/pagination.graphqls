@@ -1,0 +1,6 @@
+type Pagination {
+    totalPages: Int
+    data: [Result]
+}
+
+union Result = Appointment | Maintenance | Role | Servicio | User | Vehicle

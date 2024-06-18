@@ -2,6 +2,7 @@ package com.group8.code.service;
 
 import com.group8.code.domain.User;
 import com.group8.code.dto.AuthDto;
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.UserDto;
 
 import java.security.NoSuchAlgorithmException;
@@ -9,6 +10,7 @@ import java.util.List;
 
 public interface UserService {
     List<User> findAll();
+    Pagination<User> findAll(int offset, int limit);
 
     User findById(String id);
 

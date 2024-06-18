@@ -4,10 +4,14 @@ package com.group8.code.service.impl;
 import com.group8.code.domain.*;
 import com.group8.code.dto.DetailDto;
 import com.group8.code.dto.MaintenanceDto;
+import com.group8.code.dto.Pagination;
 import com.group8.code.enums.Status;
 import com.group8.code.repository.*;
 import com.group8.code.service.MaintenanceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,6 +46,16 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+    public Pagination<Maintenance> getAll(int offset, int limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<Maintenance> all = maintenanceRepository.findAll(pageable);
+        List<Maintenance> maintenances = all.getContent();
+        maintenances.forEach(this::setRelatedEntities);
+        Pagination pag = new Pagination<>(all.getTotalPages(),maintenances);
+        return pag;
+    }
+
+    @Override
     public List<Maintenance> getAllByEmployee(String id) {
         List<Maintenance> maintenances = maintenanceRepository.findAllByEmployeeId(id).orElse(new ArrayList<>());
         maintenances.forEach(this::setRelatedEntities);
@@ -59,10 +73,28 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
+
+    public Pagination<Maintenance> getAllNotCompleted(int offset, int limit) {
+
+        Pageable pageable = PageRequest.of(offset, limit);
+
+        Page<Maintenance> page = maintenanceRepository.findAllByStatusIn(
+                Arrays.asList(Status.PENDING.toString(), Status.IN_PROGRESS.toString()),
+                pageable
+        );
+
+        List<Maintenance> maintenances = page.getContent();
+        maintenances.forEach(this::setRelatedEntities);
+        return new Pagination<>(page.getTotalPages(), maintenances);
+    }
+
+
+    @Override
     public Maintenance getByAppointment(String id) {
         System.out.println("appoint mainte");
         Maintenance maintenance = maintenanceRepository.findByAppointmentId(id)
                 .orElseThrow(() -> new RuntimeException("Maintenance not found with id: " + id));
+
         setRelatedEntities(maintenance);
         return maintenance;
     }
@@ -71,6 +103,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     public Maintenance getById(String id) {
         Maintenance maintenance = maintenanceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Maintenance not found with id: " + id));
+        System.out.println(maintenance.getDetails() + " ------ ");
         setRelatedEntities(maintenance);
         return maintenance;
     }

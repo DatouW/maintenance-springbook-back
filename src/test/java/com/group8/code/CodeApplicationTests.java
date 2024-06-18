@@ -35,4 +35,19 @@ class CodeApplicationTests {
         System.out.println(appointmentRepository.findAll());
     }
 
+
+    void nullValue(int offset){
+
+        if(offset < 0){
+            System.out.println("correcto");
+        }
+    }
+
+    @Test
+    void test1(){
+        int offset;
+
+    }
+
+
 }

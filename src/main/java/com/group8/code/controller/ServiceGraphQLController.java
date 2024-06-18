@@ -2,6 +2,7 @@ package com.group8.code.controller;
 
 import com.group8.code.domain.Servicio;
 
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.ServiceDto;
 import com.group8.code.service.ServicioService;
 import jakarta.validation.*;
@@ -26,6 +27,12 @@ public class ServiceGraphQLController {
     @QueryMapping
     public List<Servicio> services(){
         return servicioService.findAll();
+    }
+
+    @PreAuthorize("hasAnyAuthority('service/view','Ver Servicios','Ver Citas de Mantenimiento','Ver Mantenimientos')")
+    @QueryMapping
+    public Pagination<Servicio> servicesPag(@Argument int offset, @Argument int limit){
+        return servicioService.findAll(offset,limit);
     }
 
     @PreAuthorize("hasAnyAuthority('service/view','Ver Servicios','Ver Citas de Mantenimiento')")

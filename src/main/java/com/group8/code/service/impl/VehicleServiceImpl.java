@@ -2,14 +2,16 @@ package com.group8.code.service.impl;
 
 import com.group8.code.domain.User;
 import com.group8.code.domain.Vehicle;
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.VehicleDto;
 import com.group8.code.repository.UserRepository;
 import com.group8.code.repository.VehicleRepository;
 import com.group8.code.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,15 @@ public class VehicleServiceImpl implements VehicleService {
         List<Vehicle> vehicles = vehicleRepository.findAll();
         vehicles.forEach(this::addCustomerInfo);
         return vehicles;
+    }
+
+    @Override
+    public Pagination<Vehicle> findAll(int offset, int limit) {
+        System.out.println("find all veh pag");
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<Vehicle> all = vehicleRepository.findAll(pageable);
+        all.getContent().forEach(this::addCustomerInfo);
+        return new Pagination<>(all.getTotalPages(),all.getContent());
     }
 
     @Override

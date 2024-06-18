@@ -3,6 +3,7 @@ package com.group8.code.controller;
 import com.group8.code.domain.Maintenance;
 import com.group8.code.dto.DetailDto;
 import com.group8.code.dto.MaintenanceDto;
+import com.group8.code.dto.Pagination;
 import com.group8.code.service.MaintenanceService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -30,9 +31,21 @@ public class MaintenanceGraphQLController {
     }
 
     @QueryMapping
+    @PreAuthorize("hasAnyAuthority('maintenance/view','Ver Mantenimientos')")
+    public Pagination<Maintenance> maintenancesPag(@Argument int offset, @Argument int limit) {
+        return maintenanceService.getAll(offset,limit);
+    }
+
+    @QueryMapping
     @PreAuthorize("hasAnyAuthority('maintenance/view','Ver Citas de Mantenimiento')")
     public List<Maintenance> maintenancesNotCompleted() {
         return maintenanceService.getAllNotCompleted();
+    }
+
+    @QueryMapping
+    @PreAuthorize("hasAnyAuthority('maintenance/view','Ver Citas de Mantenimiento')")
+    public Pagination<Maintenance> maintenancesNotCompletedPag(@Argument int offset, @Argument int limit) {
+        return maintenanceService.getAllNotCompleted(offset,limit);
     }
     @QueryMapping
     @PreAuthorize("hasAnyAuthority('maintenance/view','Ver Citas de Mantenimiento')")

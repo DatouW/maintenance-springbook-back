@@ -30,6 +30,7 @@ input UserDto{
 
 extend type Query {
     users: [User]
+    usersPag(offset: Int, limit: Int): Pagination
     user(id: ID!): User
 }
 

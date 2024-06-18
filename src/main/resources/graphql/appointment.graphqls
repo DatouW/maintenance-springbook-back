@@ -21,9 +21,12 @@ input AppointmentDto{
 
 type Query{
     appointments: [Appointment]
+    appointmentsPag(offset: Int, limit: Int): Pagination
     appointment(id: ID!): Appointment
     appointmentsByCustomer(customerId: String!): [Appointment]
+    appointmentsByCustomerPag(customerId: String!,offset: Int, limit: Int): Pagination
     pendingAppointments: [Appointment]
+    pendingAppointmentsPag(offset: Int, limit: Int): Pagination
 }
 
 type Mutation{

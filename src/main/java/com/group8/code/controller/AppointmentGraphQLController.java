@@ -2,6 +2,7 @@ package com.group8.code.controller;
 
 import com.group8.code.domain.Appointment;
 import com.group8.code.dto.AppointmentDto;
+import com.group8.code.dto.Pagination;
 import com.group8.code.service.AppointmentService;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +30,11 @@ public class AppointmentGraphQLController {
         return appointmentService.getAll();
     }
 
+    @QueryMapping
+    @PreAuthorize("hasAnyAuthority('appointment/view','Ver Citas de Mantenimiento')")
+    public Pagination<Appointment> appointmentsPag(@Argument int offset, @Argument int limit) {
+        return appointmentService.getAll(offset, limit);
+    }
 
     @QueryMapping
     @PreAuthorize("hasAnyAuthority('appointment/view','Ver Citas de Mantenimiento')")
@@ -47,6 +53,19 @@ public class AppointmentGraphQLController {
     public List<Appointment> pendingAppointments() {
         return appointmentService.getAllPendingAppointments();
     }
+
+    @QueryMapping
+    @PreAuthorize("hasAnyAuthority('appointment/view','Ver Citas de Mantenimiento')")
+    public Pagination<Appointment> appointmentsByCustomerPag(@Argument String customerId, @Argument int offset, @Argument int limit) {
+        return appointmentService.getAllByCustomer(customerId,offset,limit);
+    }
+
+    @QueryMapping
+    @PreAuthorize("hasAnyAuthority('appointment/view','Ver Citas de Mantenimiento')")
+    public Pagination<Appointment> pendingAppointmentsPag(@Argument int offset, @Argument int limit) {
+        return appointmentService.getAllPendingAppointments(offset, limit);
+    }
+
 
     @MutationMapping
     @PreAuthorize("hasAnyAuthority('appointment/create','Ver Citas de Mantenimiento')")

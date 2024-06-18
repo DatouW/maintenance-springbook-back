@@ -1,6 +1,7 @@
 package com.group8.code.controller;
 
 import com.group8.code.domain.User;
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.UserDto;
 import com.group8.code.dto.AuthDto;
 import com.group8.code.service.UserService;
@@ -27,6 +28,13 @@ public class UserGraphQLController {
     @PreAuthorize("hasAnyAuthority('user/view','Ver Usuarios','Registrar Vehículo')")
     public List<User> users(){
         return userService.findAll();
+    }
+
+    @QueryMapping
+    @PreAuthorize("hasAnyAuthority('user/view','Ver Usuarios','Registrar Vehículo')")
+    public Pagination<User> usersPag(@Argument int offset, @Argument int limit){
+
+        return userService.findAll(offset,limit);
     }
 
     @QueryMapping

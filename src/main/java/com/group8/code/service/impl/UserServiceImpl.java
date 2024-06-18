@@ -3,12 +3,16 @@ package com.group8.code.service.impl;
 import com.group8.code.domain.Role;
 import com.group8.code.domain.User;
 import com.group8.code.dto.AuthDto;
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.UserDto;
 import com.group8.code.repository.RoleRepository;
 import com.group8.code.repository.UserRepository;
 import com.group8.code.service.UserService;
 import com.group8.code.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,7 +38,17 @@ public class UserServiceImpl implements UserService {
     public List<User> findAll() {
         System.out.println("here---all people");
         List<User> users = userRepository.findAll();
-        return users.stream().map(this::addRoleInfo).collect(Collectors.toList());
+        users.forEach(this::addRoleInfo);
+        return users;
+    }
+
+    @Override
+    public Pagination<User> findAll(int offset, int limit) {
+        System.out.println("here---all people pag");
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<User> all = userRepository.findAll(pageable);
+        all.getContent().forEach(this::addRoleInfo);
+        return new Pagination<>(all.getTotalPages(),all.getContent());
     }
 
     @Override
@@ -124,11 +138,10 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    private User addRoleInfo(User user) {
+    private void addRoleInfo(User user) {
         if (user != null && user.getRoleId() != null) {
             Role role = roleRepository.findById(user.getRoleId()).orElse(null);
             user.setRole(role);
         }
-        return user;
     }
 }

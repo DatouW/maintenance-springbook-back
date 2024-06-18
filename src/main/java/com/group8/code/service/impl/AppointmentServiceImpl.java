@@ -5,18 +5,22 @@ import com.group8.code.domain.Servicio;
 import com.group8.code.domain.User;
 import com.group8.code.domain.Vehicle;
 import com.group8.code.dto.AppointmentDto;
+import com.group8.code.dto.Pagination;
 import com.group8.code.enums.Status;
 import com.group8.code.repository.AppointmentRepository;
 import com.group8.code.repository.ServiceRepository;
 import com.group8.code.repository.UserRepository;
 import com.group8.code.repository.VehicleRepository;
 import com.group8.code.service.AppointmentService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,10 +43,24 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointments.forEach(this::addAddtionalInfo);
         return appointments;
     }
+
+    @Override
+    public Pagination<Appointment> getAll(int offset, int limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<Appointment> all = appointmentRepository.findAll(pageable);
+        List<Appointment> appointments = all.getContent();
+        System.out.println(appointments);
+        appointments.forEach(this::addAddtionalInfo);
+        Pagination pag = new Pagination<Appointment>();
+        pag.setData(appointments);
+        pag.setTotalPages(all.getTotalPages());
+        return pag;
+    }
     @Override
     public List<Appointment> getAllByCustomer(String customerId){
-        List<Appointment> appointments = appointmentRepository.findAllByCustomerId(customerId).orElse(new ArrayList<>() {
+        List<Appointment> appointments = appointmentRepository.findAllByCustomerId(new ObjectId(customerId)).orElse(new ArrayList<>() {
         });
+        System.out.println(appointments);
         appointments.forEach(this::addAddtionalInfo);
         return appointments;
     }
@@ -52,6 +70,25 @@ public class AppointmentServiceImpl implements AppointmentService {
         });
         appointments.forEach(this::addAddtionalInfo);
         return appointments;
+    }
+
+    @Override
+    public Pagination<Appointment> getAllByCustomer(String customerId, int offset, int limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<Appointment> byCustomerId = appointmentRepository.findAllByCustomerId(new ObjectId(customerId), pageable);
+        List<Appointment> appointments = byCustomerId.getContent();
+        appointments.forEach(this::addAddtionalInfo);
+        return new Pagination<>(byCustomerId.getTotalPages(),appointments);
+    }
+
+    @Override
+    public Pagination<Appointment> getAllPendingAppointments(int offset, int limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        Page<Appointment> byCustomerId = appointmentRepository.findAllByStatus(Status.PENDING.toString(), pageable);
+        List<Appointment> appointments = byCustomerId.getContent();
+        appointments.forEach(this::addAddtionalInfo);
+        System.out.println("here pending app pag-------");
+        return new Pagination<>(byCustomerId.getTotalPages(),appointments);
     }
 
     @Override
@@ -67,7 +104,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setScheduledDate(appointmentDto.getScheduledDate());
         appointment.setStatus(Status.PENDING.toString());
         appointment.setRequestedServiceIds(appointmentDto.getRequestedServiceIds());
-        appointment.setCustomerId(appointmentDto.getCustomerId());
+        appointment.setCustomerId(new ObjectId(appointmentDto.getCustomerId()));
         appointment.setVehicleId(appointmentDto.getVehicleId());
 
         Appointment appointment1 = null;
@@ -96,7 +133,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setScheduledDate(appointmentDto.getScheduledDate());
         appointment.setStatus(appointmentDto.getStatus());
         appointment.setRequestedServiceIds(appointmentDto.getRequestedServiceIds());
-        appointment.setCustomerId(appointmentDto.getCustomerId());
+        appointment.setCustomerId(new ObjectId(appointmentDto.getCustomerId()));
         appointment.setVehicleId(appointmentDto.getVehicleId());
 
         addAddtionalInfo(appointment);
@@ -122,7 +159,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     private void addAddtionalInfo(Appointment appointment){
 
         if(appointment != null){
-            User customer = userRepository.findById(appointment.getCustomerId()).orElseThrow(() -> new RuntimeException("Cliente no encontrado " + appointment.getCustomerId()));
+            User customer = userRepository.findById(appointment.getCustomerId().toString()).orElseThrow(() -> new RuntimeException("Cliente no encontrado " + appointment.getCustomerId()));
             Vehicle vehicle = vehicleRepository.findById(appointment.getVehicleId()).orElseThrow(() -> new RuntimeException("Vehiculo no encontrado" + appointment.getVehicleId()));
             List<Servicio> requestedServices = appointment.getRequestedServiceIds().stream()
                     .map(serviceId -> serviceRepository.findById(serviceId)

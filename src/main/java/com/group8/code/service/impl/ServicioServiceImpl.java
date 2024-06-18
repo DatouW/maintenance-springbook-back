@@ -2,10 +2,14 @@ package com.group8.code.service.impl;
 
 import com.group8.code.domain.Servicio;
 import com.group8.code.domain.Vehicle;
+import com.group8.code.dto.Pagination;
 import com.group8.code.dto.ServiceDto;
 import com.group8.code.repository.ServiceRepository;
 import com.group8.code.service.ServicioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +25,14 @@ public class ServicioServiceImpl implements ServicioService {
     public List<Servicio> findAll() {
         System.out.println("finda ll list service");
         return serviceRepository.findAll();
+    }
+
+    @Override
+    public Pagination<Servicio> findAll(int offset, int limit) {
+        Pageable pageable = PageRequest.of(offset, limit);
+        System.out.println("finda ll list service");
+        Page<Servicio> all = serviceRepository.findAll(pageable);
+        return new Pagination<>(all.getTotalPages(),all.getContent());
     }
 
     @Override

@@ -15,7 +15,7 @@ type Maintenance {
 }
 
 type Detail {
-    id:String
+    id: String
     description: String!
     cost: Float
 }
@@ -38,8 +38,10 @@ input MaintenanceDto {
 
 extend type Query {
     maintenances: [Maintenance]
+    maintenancesPag(offset: Int, limit: Int): Pagination
     maintenancesByEmployee(employeeId: String!): [Maintenance]
     maintenancesNotCompleted: [Maintenance]
+    maintenancesNotCompletedPag(offset: Int, limit: Int): Pagination
 
     maintenance(id: ID!): Maintenance
     maintenanceByAppointment(id: String!): Maintenance

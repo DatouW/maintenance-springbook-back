@@ -11,6 +11,7 @@ input ServiceDto{
 
 extend type Query {
     services: [Servicio]
+    servicesPag(offset: Int, limit: Int): Pagination
     service(id: ID!): Servicio
 }
 

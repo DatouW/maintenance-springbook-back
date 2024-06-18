@@ -1,6 +1,8 @@
 package com.group8.code.repository;
 
 import com.group8.code.domain.Maintenance;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.repository.Repository;
 
@@ -11,4 +13,5 @@ public interface MaintenanceRepository extends MongoRepository<Maintenance, Stri
     Optional<List<Maintenance>> findAllByEmployeeId(String id);
     Optional<Maintenance> findByAppointmentId(String id);
     Optional<List<Maintenance>> findAllByStatusIn(List<String> status);
+    Page<Maintenance> findAllByStatusIn(List<String> status, Pageable pageable);
 }
