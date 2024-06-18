@@ -74,9 +74,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Pagination<Appointment> getAllByCustomer(String customerId, int offset, int limit) {
+//        System.out.println("herre get all customer");
         Pageable pageable = PageRequest.of(offset, limit);
         Page<Appointment> byCustomerId = appointmentRepository.findAllByCustomerId(new ObjectId(customerId), pageable);
         List<Appointment> appointments = byCustomerId.getContent();
+        System.out.println("get all app by customer " + appointments);
         appointments.forEach(this::addAddtionalInfo);
         return new Pagination<>(byCustomerId.getTotalPages(),appointments);
     }

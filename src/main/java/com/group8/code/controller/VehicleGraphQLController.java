@@ -49,6 +49,7 @@ public class VehicleGraphQLController {
     @MutationMapping
     @PreAuthorize("hasAnyAuthority('vehicle/create','Registrar Vehículos')")
     public Vehicle createVehicle(@Argument @Valid VehicleDto vehicleDto) {
+        System.out.println("autorizado vehiculo------");
         return vehicleService.create(vehicleDto);
     }
 

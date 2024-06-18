@@ -122,7 +122,6 @@ public class MaintenanceServiceImpl implements MaintenanceService {
                 .build();
         Appointment appointment = appointmentRepository.findById(maintenanceDto.getAppointmentId()).orElseThrow(() -> new RuntimeException("Cita no encontrada " + maintenanceDto.getAppointmentId()));
         appointment.setStatus(Status.IN_PROGRESS.toString());
-
         //
         List<String> serviceIds = appointment.getRequestedServiceIds();
         List<Detail> details = new ArrayList<>();

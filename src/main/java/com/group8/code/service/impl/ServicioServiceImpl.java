@@ -30,8 +30,9 @@ public class ServicioServiceImpl implements ServicioService {
     @Override
     public Pagination<Servicio> findAll(int offset, int limit) {
         Pageable pageable = PageRequest.of(offset, limit);
-        System.out.println("finda ll list service");
+        System.out.println("find all list offset " + offset + " limit " + limit );
         Page<Servicio> all = serviceRepository.findAll(pageable);
+        System.out.println(all.getContent());
         return new Pagination<>(all.getTotalPages(),all.getContent());
     }
 

@@ -57,6 +57,7 @@ public class AppointmentGraphQLController {
     @QueryMapping
     @PreAuthorize("hasAnyAuthority('appointment/view','Ver Citas de Mantenimiento')")
     public Pagination<Appointment> appointmentsByCustomerPag(@Argument String customerId, @Argument int offset, @Argument int limit) {
+//        System.out.println("app cust pag");
         return appointmentService.getAllByCustomer(customerId,offset,limit);
     }
 
